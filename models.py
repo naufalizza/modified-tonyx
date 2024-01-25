@@ -73,8 +73,8 @@ class Reg_Trainer():
         super().__init__()
 
         self.config = config
-        # self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
-        self.device = torch.device("cpu")
+        self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
+        # self.device = torch.device("cpu")
         if "distilbert" in self.config.model_pretrain_dir:
             self.tokenizer = DistilBertTokenizer.from_pretrained(self.config.model_pretrain_dir)
         else:
