@@ -23,9 +23,12 @@ def main():
     logging.info(f"Params:\n{params}")
 
 
+    print("INITIALIZING CONFIG...")
     config = Reg_FT_Configer(params)
     logging.info(f'Config:\n{config}')
+    print("INITIALIZING TRAINER...")
     trainer = Reg_Trainer(config)
+    print("FINETUNING...")
     trainer.run_finetune()
 
 if __name__ == "__main__":

@@ -176,7 +176,7 @@ class Reg_Trainer():
 
 
     def train(self, model, train_loader, valid_loader, optimizer, schedule):
-
+        print("START TRAIN...")
         best_pearson = 0.0
         criterion = nn.MSELoss()
         model.train() # sets the model to training mode
@@ -184,7 +184,7 @@ class Reg_Trainer():
         for i in range(self.config.epoch):
             start_time = time.time()
             train_loss_sum = 0.0
-            
+            print(f'EPOCH {i+1} <<<<')
             logging.info(f"—————————————————————— Epoch {i+1} ——————————————————————")
             
             for idx, (ids, att, y) in enumerate(train_loader):
@@ -213,6 +213,7 @@ class Reg_Trainer():
                     logging.info("Epoch {:02d} | Step {:03d}/{:03d} | Loss {:.4f} | Time {:.2f}".format(i+1, idx+1, len(train_loader), train_loss_sum/(idx+1), time.time()-start_time))
             
 
+            print("Start evaluating!")
             logging.info("Start evaluating!")
             dev_true, dev_pred = self.predict(model, valid_loader)
             cur_pearson = np.corrcoef(dev_true, dev_pred)[0][1]
@@ -220,7 +221,10 @@ class Reg_Trainer():
             if cur_pearson > best_pearson:
                 best_pearson = cur_pearson
                 torch.save(model.state_dict(), self.config.model_save_path)
-            
+
+            print("Current dev pearson is {:.4f}, best pearson is {:.4f}".format(cur_pearson, best_pearson))
+            print("Time costed : {}s \n".format(round(time.time() - start_time, 3)))
+    
             logging.info("Current dev pearson is {:.4f}, best pearson is {:.4f}".format(cur_pearson, best_pearson))
             logging.info("Time costed : {}s \n".format(round(time.time() - start_time, 3)))
     
@@ -230,6 +234,7 @@ class Reg_Trainer():
         train_loader = self.data_loader(*self.dataset(self.config.training_set_path))
         dev_loader = self.data_loader(*self.dataset(self.config.testing_set_path))
 
+        print("INITIALIZING MODEL...")
         model = MMRegressor(self.config.model_pretrain_dir).to(self.device)
         
         for param in model.parameters():
